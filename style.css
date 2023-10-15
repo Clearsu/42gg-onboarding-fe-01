@@ -1,0 +1,35 @@
+body {
+	background-color: rgb(215, 255, 215);
+	text-align: center;
+}
+
+#app {
+	background-color: white;
+}
+
+#todo-form {
+	padding: 10px;
+}
+
+#todo-input {
+	padding: 10px;
+}
+
+.todo-submit-button {
+	background-color: rgb(123, 226, 123);
+	border-radius: 10px;
+	border-color: white;
+	padding: 10px;
+	color: white;
+}
+
+.todo-submit-button:hover {
+	background-color: rgb(161, 251, 161);
+	cursor: pointer;
+}
+
+li {
+	background-color: rgb(167, 253, 167);
+	border-radius: 10px;
+	padding: 10px;
+}
