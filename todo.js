@@ -1,4 +1,11 @@
-function todoSubmitHandler (event) {
+function createModifyButton(buttonText) {
+	const button = document.createElement('button');
+	button.className = 'modify-button';
+	button.textContent = buttonText;
+	return button;
+}
+
+function todoSubmitHandler(event) {
 	event.preventDefault();	
 
 	const inputValue = document.getElementById('todo-input').value;
@@ -14,17 +21,8 @@ function todoSubmitHandler (event) {
 
 		const buttonGroupDiv = document.createElement('div');
 		buttonGroupDiv.className = 'modify-button-group';
-
-		const editButton = document.createElement('button');
-		editButton.className = 'modify-button';
-		editButton.textContent = '수정';
-		buttonGroupDiv.appendChild(editButton);
-
-		const deleteButton = document.createElement('button');
-		deleteButton.className = 'modify-button';
-		deleteButton.textContent = '삭제';
-		buttonGroupDiv.appendChild(deleteButton);
-
+		buttonGroupDiv.appendChild(createModifyButton('수정'));
+		buttonGroupDiv.appendChild(createModifyButton('삭제'));
 		newTodoItem.appendChild(buttonGroupDiv);
 
 		document.getElementById('todo-list').appendChild(newTodoItem);
@@ -32,45 +30,70 @@ function todoSubmitHandler (event) {
 	}
 }
 
-let tempTextValue;
-
-function todoItemHandler (event) {
-	if (event.target.className === 'todo-checkbox') {
-        const listItem = event.target.parentElement;
-        if (event.target.checked) {
-            listItem.style.textDecoration = 'line-through';
-			listItem.style.color = 'grey';
-        } else {
-            listItem.style.textDecoration = 'none';
-			listItem.style.color = 'black';
-        }
-    } else if (event.target.className === 'modify-button') {
-		const listItem = event.target.parentElement.parentElement;
-		if (event.target.textContent === '삭제') {
-			listItem.remove();
-		} else if (event.target.textContent === '수정') {
-			event.target.textContent = '취소';
-			event.target.parentElement.childNodes[1].textContent = '완료';
-			const textNode = listItem.childNodes[1];
-			const input = document.createElement('input');
-			input.type = 'text';
-			input.value = textNode.textContent;
-			tempTextValue = textNode.textContent;
-			listItem.replaceChild(input, textNode);
-			input.focus();
-		} else if (event.target.textContent === '취소') {
-			event.target.textContent = '수정';
-			event.target.parentElement.childNodes[1].textContent = '삭제';
-			const originalTextNode = document.createTextNode(tempTextValue);
-			listItem.replaceChild(originalTextNode, listItem.childNodes[1]);
-		} else if (event.target.textContent === '완료') {
-			event.target.parentElement.childNodes[0].textContent = '수정';
-			event.target.textContent = '삭제';
-			const newTextNode = document.createTextNode(listItem.childNodes[1].value);
-			listItem.replaceChild(newTextNode, listItem.childNodes[1]);
-		}
-	}
+function toggleTodoItemStyling(listItem, isChecked) {
+    listItem.style.textDecoration = isChecked ? 'line-through' : 'none';
+    listItem.style.color = isChecked ? 'grey' : 'black';
 }
+
+function changeButtonGroupText(buttonGroup, text1, text2) {
+	buttonGroup.childNodes[0].textContent = text1;
+	buttonGroup.childNodes[1].textContent = text2;
+}
+
+function deleteTodoItem(listItem) {
+    listItem.remove();
+}
+
+function beginEditingTodoItem(listItem) {
+    const textNode = listItem.childNodes[1];
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = textNode.textContent;
+	input.setAttribute('data-original', textNode.textContent);
+    listItem.replaceChild(input, textNode);
+    input.focus();
+}
+
+function cancelEditingTodoItem(listItem) {
+	const input = listItem.childNodes[1];
+	const originalText = input.getAttribute('data-original');
+    const originalTextNode = document.createTextNode(originalText);
+    listItem.replaceChild(originalTextNode, input);
+}
+
+function completeEditingTodoItem(listItem) {
+	const input = listItem.childNodes[1];
+    const newTextNode = document.createTextNode(input.value);
+    listItem.replaceChild(newTextNode, input);
+}
+
+function todoItemHandler(event) {
+	let listItem;
+	const target = event.target;
+
+    if (target.className === 'todo-checkbox') {
+		listItem = target.parentElement;
+        toggleTodoItemStyling(listItem, target.checked);
+    } else if (target.className === 'modify-button') {
+		const textContent = target.textContent;
+		const buttonGroupDiv = target.parentElement;
+        listItem = buttonGroupDiv.parentElement;
+
+        if (textContent === '삭제') {
+            deleteTodoItem(listItem);
+        } else if (textContent === '수정') {
+			changeButtonGroupText(buttonGroupDiv, '취소', '완료');
+            beginEditingTodoItem(listItem);
+        } else if (textContent === '취소') {
+			changeButtonGroupText(buttonGroupDiv, '수정', '삭제');
+            cancelEditingTodoItem(listItem);
+        } else if (textContent === '완료') {
+			changeButtonGroupText(buttonGroupDiv, '수정', '삭제');
+            completeEditingTodoItem(listItem);
+        }
+    }
+}
+
 
 document.getElementById('todo-form').addEventListener('submit', todoSubmitHandler);
 document.getElementById('todo-list').addEventListener('change', todoItemHandler);
