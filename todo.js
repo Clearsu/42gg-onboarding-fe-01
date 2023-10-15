@@ -1,3 +1,29 @@
+document.addEventListener('DOMContentLoaded', () => {
+	const savedTodoList = JSON.parse(localStorage.getItem('todos')) || [];
+	savedTodoList.forEach((todo) => {
+		renderTodoItem(todo.text, todo.isChecked);
+	})
+})
+
+function renderTodoItem(text, isChecked = false) {
+	const newTodoItem = document.createElement('li');
+
+	const checkBox = document.createElement('input');
+	checkBox.type = 'checkbox';
+	checkBox.className = 'todo-checkbox';
+	checkBox.isChecked = isChecked;
+	newTodoItem.appendChild(checkBox);
+	newTodoItem.appendChild(document.createTextNode(text));
+
+	const buttonGroupDiv = document.createElement('div');
+	buttonGroupDiv.className = 'modify-button-group';
+	buttonGroupDiv.appendChild(createModifyButton('수정'));
+	buttonGroupDiv.appendChild(createModifyButton('삭제'));
+	newTodoItem.appendChild(buttonGroupDiv);
+
+	document.getElementById('todo-list').appendChild(newTodoItem);
+}
+
 function createModifyButton(buttonText) {
 	const button = document.createElement('button');
 	button.className = 'modify-button';
@@ -11,23 +37,20 @@ function todoSubmitHandler(event) {
 	const inputValue = document.getElementById('todo-input').value;
 
 	if (inputValue.trim()) {
-		const newTodoItem = document.createElement('li');
-
-		const checkbox = document.createElement('input');
-		checkbox.type = 'checkbox';
-		checkbox.className = 'todo-checkbox';
-		newTodoItem.appendChild(checkbox);
-		newTodoItem.appendChild(document.createTextNode(inputValue));
-
-		const buttonGroupDiv = document.createElement('div');
-		buttonGroupDiv.className = 'modify-button-group';
-		buttonGroupDiv.appendChild(createModifyButton('수정'));
-		buttonGroupDiv.appendChild(createModifyButton('삭제'));
-		newTodoItem.appendChild(buttonGroupDiv);
-
-		document.getElementById('todo-list').appendChild(newTodoItem);
+		renderTodoItem(inputValue);
 		document.getElementById('todo-input').value = '';
+		updateLocalStorage();
 	}
+}
+
+function updateLocalStorage() {
+    const todos = [];
+    document.querySelectorAll('#todo-list li').forEach((item) => {
+        const text = item.childNodes[1].nodeValue;
+        const isChecked = item.childNodes[0].checked;
+        todos.push({ text, isChecked });
+    });
+    localStorage.setItem('todos', JSON.stringify(todos));
 }
 
 function toggleTodoItemStyling(listItem, isChecked) {
@@ -42,6 +65,7 @@ function changeButtonGroupText(buttonGroup, text1, text2) {
 
 function deleteTodoItem(listItem) {
     listItem.remove();
+	updateLocalStorage();
 }
 
 function beginEditingTodoItem(listItem) {
@@ -65,6 +89,7 @@ function completeEditingTodoItem(listItem) {
 	const input = listItem.childNodes[1];
     const newTextNode = document.createTextNode(input.value);
     listItem.replaceChild(newTextNode, input);
+	updateLocalStorage();
 }
 
 function todoItemHandler(event) {
@@ -93,7 +118,6 @@ function todoItemHandler(event) {
         }
     }
 }
-
 
 document.getElementById('todo-form').addEventListener('submit', todoSubmitHandler);
 document.getElementById('todo-list').addEventListener('change', todoItemHandler);
