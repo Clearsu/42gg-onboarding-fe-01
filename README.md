@@ -11,16 +11,16 @@
 - 완료 상태 체크 기능을 구현하였습니다.
 
 - 할 일 추가
-![todo-list](images/todo-list1.png)
+![todo-list](public/image/todo-list1.png)
 
 - 수정 및 수정 취소
-![edit-todo](images/todo-list2.png)
+![edit-todo](public/image/todo-list2.png)
 
 - 수정 완료
-![complete-editing](images/todo-list3.png)
+![complete-editing](public/image/todo-list3.png)
 
 - 삭제
-![delete-todo](images/todo-list4.png)
+![delete-todo](public/image/todo-list4.png)
 
 - 완료 상태 체크
-![check-todo](images/todo-list5.png)
+![check-todo](public/image/todo-list5.png)
