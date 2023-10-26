@@ -1,0 +1,70 @@
+body {
+	padding: 20%;
+	background-color: rgb(215, 255, 215);
+	text-align: center;
+}
+
+#app {
+	padding: 20px;
+	background-color: white;
+	border-radius: 10px;
+}
+
+#todo-form {
+	padding: 10px;
+}
+
+#todo-input {
+	padding: 10px;
+	border-radius: 10px;
+}
+
+.todo-submit-button {
+	padding: 10px;
+	background-color: rgb(123, 226, 123);
+	border-radius: 10px;
+	border: none;
+	color: white;
+}
+
+.todo-submit-button:hover {
+	background-color: rgb(161, 251, 161);
+	cursor: pointer;
+}
+
+ul {
+	padding: 0;
+}
+
+li {
+	display: flex;
+	align-items: center;
+	padding: 10px;
+	margin: 10px;
+	background-color: rgb(239, 255, 239);
+	border-radius: 10px;
+	list-style-type: none;
+}
+
+.todo-checkbox {
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+}
+
+.modify-button-group {
+	margin-left: auto;
+}
+
+.modify-button {
+	padding: 10px;
+	margin-left: 5px;
+	background-color: transparent;
+	border-radius: 10px;
+	border: none;
+	color: grey;
+}
+
+.modify-button:hover {
+	background-color: rgb(196, 237, 206);
+}
